@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useContext } from "react";
 
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
+import AuthContext from "../../context/auth-context";
 
 const emailReducer = (state, action) => {
   if (action.type === "USER_INPUT") {
@@ -59,22 +60,19 @@ const Login = (props) => {
     isValid: null,
   });
 
-
-  const {isValid: emailIsValid} = emailState
-  const {isValid: passwordIsValid} = passwordState
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
 
   useEffect(() => {
     const identifier = setTimeout(() => {
       console.log("Checking form validity...");
-      setFormIsValid(
-        emailIsValid && passwordIsValid
-      );
-    }, 2000);
+      setFormIsValid(emailIsValid && passwordIsValid);
+    }, 1000);
 
     //CleanUp Function. This will run before useEffect runs and whenever the components re-used
     return () => {
-      console.log('CLEAN UP!')
-      clearTimeout(identifier)
+      console.log("CLEAN UP!");
+      clearTimeout(identifier);
     };
   }, [emailIsValid, passwordIsValid]);
 
@@ -110,9 +108,10 @@ const Login = (props) => {
     });
   };
 
+  const ctx = useContext(AuthContext);
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value);
+    ctx.onLogin(emailState.value, passwordState.value);
   };
 
   return (
